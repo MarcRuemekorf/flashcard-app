@@ -3,12 +3,7 @@
 import React from 'react';
 import Card from './card/Card';
 
-interface FlashcardProps {
-    question: string;
-    answer: string;
-}
-
-const Flashcard: React.FC<FlashcardProps> = ({ question, answer }) => {
+const Flashcard: React.FC<Flashcard> = ({ question, answer }) => {
     const [showAnswer, setShowAnswer] = React.useState(false);
 
     return (
