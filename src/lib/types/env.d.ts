@@ -1,9 +1,9 @@
 interface Flashcard {
-    question: string;
-    answer: string;
+    question: string
+    answer: string
 }
 
 interface FlashcardLibrary {
-    isPending: boolean;
-    data: Flashcard[];
+    isPending: boolean
+    data: Flashcard[]
 }

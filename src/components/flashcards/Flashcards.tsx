@@ -1,13 +1,13 @@
-import React from 'react';
+import React from 'react'
 import dynamic from 'next/dynamic'
-import Button from '@/components/input-elements/Button';
-import useGetFlashcardLibrary from '@/lib/hooks/useGetFlashcardLibrary';
+import Button from '@/components/input-elements/Button'
+import useGetFlashcardLibrary from '@/lib/hooks/useGetFlashcardLibrary'
 const Flashcard = dynamic(() => import('@/components/flashcards/flashcard/Flashcard'), { ssr: false })
 
 const Flashcards: React.FC = () => {
-    const [currentIndex, setCurrentIndex] = React.useState(0);
+    const [currentIndex, setCurrentIndex] = React.useState(0)
 
-    const {isPending, data} = useGetFlashcardLibrary()
+    const { isPending, data } = useGetFlashcardLibrary()
 
     return (
         <div className="w-full p-4">
@@ -17,19 +17,17 @@ const Flashcards: React.FC = () => {
                         <p>Loading...</p>
                     ) : (
                         <>
-                        <div className="text-center">
-                        {currentIndex + 1}/{data.length}
-                    </div>
-                        <Flashcard question={data[currentIndex].question} answer={data[currentIndex].answer} />
-                        <Button onClick={() => setCurrentIndex((currentIndex + 1) % data.length)}>
-                            Next
-                        </Button> 
+                            <div className="text-center">
+                                {currentIndex + 1}/{data.length}
+                            </div>
+                            <Flashcard question={data[currentIndex].question} answer={data[currentIndex].answer} />
+                            <Button onClick={() => setCurrentIndex((currentIndex + 1) % data.length)}>Next</Button>
                         </>
-                    )}  
+                    )}
                 </div>
             </div>
         </div>
-    );
-};
+    )
+}
 
-export default Flashcards;
+export default Flashcards

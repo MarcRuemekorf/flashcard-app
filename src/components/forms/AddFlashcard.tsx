@@ -1,20 +1,20 @@
-import React from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
-import Input from '../input-elements/Input';
-import Textarea from '../input-elements/Textarea';
+import React from 'react'
+import { useForm, FormProvider } from 'react-hook-form'
+import Input from '../input-elements/Input'
+import Textarea from '../input-elements/Textarea'
 
 type FormData = {
-    title: string;
-    description: string;
-    content: string;
-};
+    title: string
+    description: string
+    content: string
+}
 
 const AddFlashcard: React.FC = () => {
-    const methods = useForm<FormData>();
+    const methods = useForm<FormData>()
 
     const onSubmit = (data: FormData) => {
-        console.log(data);
-    };
+        console.log(data)
+    }
 
     return (
         <FormProvider {...methods}>
@@ -26,7 +26,7 @@ const AddFlashcard: React.FC = () => {
                 <button type="submit">Submit</button>
             </form>
         </FormProvider>
-    );
-};
+    )
+}
 
-export default AddFlashcard;
+export default AddFlashcard

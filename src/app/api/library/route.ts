@@ -1,25 +1,25 @@
 import { NextResponse } from 'next/server'
- 
+
 const data = [
     {
         question: 'What is the capital of France?',
-        answer: 'Paris',
+        answer: 'Paris'
     },
     {
         question: 'What is the capital of Germany?',
-        answer: 'Berlin',
+        answer: 'Berlin'
     },
     {
         question: 'What is the capital of Spain?',
-        answer: 'Madrid',
+        answer: 'Madrid'
     },
     {
         question: 'What is the capital of Italy?',
-        answer: 'Rome',
+        answer: 'Rome'
     },
     {
         question: 'What is the capital of Japan?',
-        answer: 'Tokyo',
+        answer: 'Tokyo'
     }
 ]
 
