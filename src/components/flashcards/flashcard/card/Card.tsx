@@ -7,10 +7,7 @@ interface CardProps extends React.HTMLProps<HTMLDivElement> {
 
 const Card: React.FC<CardProps> = ({ children, onClick, ...props }) => {
     return (
-        <div
-            onClick={onClick}
-            className={`rounded-lg px-4 py-4 sm:p-6 drop-shadow-md md:drop-shadow-xl" cursor-pointer ${props.className}`}
-        >
+        <div onClick={onClick} className={`rounded-xl p-8 sm:p-8" cursor-pointer ${props.className}`}>
             {children}
         </div>
     )
