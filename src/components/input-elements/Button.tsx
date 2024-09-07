@@ -4,9 +4,10 @@ interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>
     children: React.ReactNode
     onClick: () => void
     variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'outline'
+    size?: 'sm' | 'md' | 'lg'
 }
 
-const Button: React.FC<ButtonProps> = ({ children, onClick, variant = 'default', ...props }) => {
+const Button: React.FC<ButtonProps> = ({ children, onClick, variant = 'default', size = 'md', ...props }) => {
     const buttonVariant: { [key: string]: string } = {
         default: 'bg-zinc-700 hover:bg-zinc-800',
         primary: 'bg-blue-600 hover:bg-blue-600',
@@ -15,10 +16,16 @@ const Button: React.FC<ButtonProps> = ({ children, onClick, variant = 'default',
         outline: 'border border-zinc-800 hover:bg-zinc-800'
     }
 
+    const buttonSize: { [key: string]: string } = {
+        sm: 'p-4',
+        md: 'p-6',
+        lg: 'p-8'
+    }
+
     return (
         <button
             {...props}
-            className={`font-semibold p-6 rounded-full ${buttonVariant[variant]} ${props.className}`}
+            className={`font-semibold rounded-full ${buttonVariant[variant]} ${buttonSize[size]} ${props.className}`}
             onClick={onClick}
         >
             {children}

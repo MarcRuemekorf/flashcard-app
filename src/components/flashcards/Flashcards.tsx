@@ -6,12 +6,14 @@ import Flashcard from '@/components/flashcards/flashcard/Flashcard'
 
 const Flashcards: React.FC = () => {
     const { data, isPending } = useGetFlashcardLibrary()
-    const [cards, setCards] = React.useState<Flashcard[]>([])
+    const [currentCardStack, setCurrentCardStack] = React.useState<Flashcard[]>([])
+    const [masteredCardStack, setMasteredCardStack] = React.useState<Flashcard[]>([])
+    const [skippedCardStack, setSkippedCardStack] = React.useState<Flashcard[]>([])
     const [currentIndex, setCurrentIndex] = React.useState(0)
 
     useEffect(() => {
         if (data) {
-            setCards(data)
+            setCurrentCardStack(data)
         }
     }, [data])
 
@@ -19,14 +21,24 @@ const Flashcards: React.FC = () => {
 
     if (!data || data.length === 0) return <p>No data...</p>
 
-    const removeCardAtIndex = (index: number) => {
-        if (cards.length === 1) {
+    const moveCardToStack = (index: number, stackType: 'mastered' | 'skipped') => {
+        if (currentCardStack.length === 0) {
             return
         }
 
-        const cardStack = [...cards]
+        const cardStack = [...currentCardStack]
         cardStack.splice(index, 1)
-        setCards(cardStack)
+
+        setCurrentCardStack(cardStack)
+
+        if (stackType === 'mastered') {
+            setMasteredCardStack([...masteredCardStack, currentCardStack[index]])
+        }
+
+        if (stackType === 'skipped') {
+            setSkippedCardStack([...skippedCardStack, currentCardStack[index]])
+        }
+
         if (currentIndex >= cardStack.length) {
             setCurrentIndex(0)
         }
@@ -34,18 +46,34 @@ const Flashcards: React.FC = () => {
 
     return (
         <div className="w-full flex flex-col gap-6">
-            <div className="text-center">
-                {currentIndex + 1}/{cards.length}
+            <div className="flex w-full">
+                <div className="flex flex-col gap-2 text-center">
+                    <p className="text-sm text-zinc-600">Learning</p>
+                    {currentCardStack.length}
+                </div>
+                <div className="flex justify-center gap-6 ml-auto">
+                    <div className="flex flex-col gap-2 text-center">
+                        <p className="text-sm text-zinc-600">Skipped</p>
+                        {skippedCardStack.length}/{data.length}
+                    </div>
+                    <div className="flex flex-col gap-2 text-center">
+                        <p className="text-sm text-zinc-600">Mastered</p>
+                        {masteredCardStack.length}/{data.length}
+                    </div>
+                </div>
             </div>
-            {cards.length > 0 && (
-                <Flashcard question={cards[currentIndex].question} answer={cards[currentIndex].answer} />
+
+            {currentCardStack.length > 0 && (
+                <Flashcard
+                    question={currentCardStack[currentIndex].question}
+                    answer={currentCardStack[currentIndex].answer}
+                />
             )}
             <div className="flex justify-center align-center">
-                <div className="flex align-center gap-2">
+                <div className="flex align-center gap-3">
                     <Button
                         variant="outline"
-                        onClick={() => setCurrentIndex((currentIndex + 1) % cards.length)}
-                        className="mx-auto"
+                        onClick={() => moveCardToStack(currentIndex, 'skipped')}
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -58,11 +86,11 @@ const Flashcards: React.FC = () => {
                             <path
                                 strokeLinecap="round"
                                 strokeLinejoin="round"
-                                d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 0 0-3.7-3.7 48.678 48.678 0 0 0-7.324 0 4.006 4.006 0 0 0-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 0 0 3.7 3.7 48.656 48.656 0 0 0 7.324 0 4.006 4.006 0 0 0 3.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3-3 3"
+                                d="M3 8.689c0-.864.933-1.406 1.683-.977l7.108 4.061a1.125 1.125 0 0 1 0 1.954l-7.108 4.061A1.125 1.125 0 0 1 3 16.811V8.69ZM12.75 8.689c0-.864.933-1.406 1.683-.977l7.108 4.061a1.125 1.125 0 0 1 0 1.954l-7.108 4.061a1.125 1.125 0 0 1-1.683-.977V8.69Z"
                             />
                         </svg>
                     </Button>
-                    <Button variant="success" onClick={() => removeCardAtIndex(currentIndex)} className="mx-auto">
+                    <Button variant="success" onClick={() => moveCardToStack(currentIndex, 'mastered')}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
