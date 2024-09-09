@@ -1,14 +1,14 @@
 'use client'
 
 import React from 'react'
-import Card from './card/Card'
+import Card from '@/components/card/Card'
 import Button from '@/components/input-elements/Button'
 
 const Flashcard: React.FC<Flashcard> = ({ question, answer }) => {
     const [showAnswer, setShowAnswer] = React.useState(false)
 
     return (
-        <Card className="flex flex-col h-full dark:bg-zinc-900 border border-zinc-800 text-white font-medium text-xl min-h-64">
+        <Card className="flex flex-col h-full min-h-64 dark:bg-zinc-900 border border-zinc-800 text-white font-medium text-xl">
             <div className="grow">{showAnswer ? <p>{answer}</p> : <p>{question}</p>}</div>
             <div className="flex justify-end mt-auto">
                 <Button variant="outline" size="sm" onClick={() => setShowAnswer(!showAnswer)}>

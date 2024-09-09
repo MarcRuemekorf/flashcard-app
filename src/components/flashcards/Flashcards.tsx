@@ -3,6 +3,7 @@ import Button from '@/components/input-elements/Button'
 import useGetFlashcardDeck from '@/lib/hooks/useGetFlashcardDeck'
 import FlashcardSkeleton from '@/components/skeletons/FlashcardSkeleton'
 import Flashcard from '@/components/flashcards/flashcard/Flashcard'
+import StatsCard from '@/components/session-stats/stats-card/StatsCard'
 
 const Flashcards: React.FC = () => {
     const { data, isPending } = useGetFlashcardDeck()
@@ -63,11 +64,13 @@ const Flashcards: React.FC = () => {
                 </div>
             </div>
 
-            {currentCardStack.length > 0 && (
+            {currentCardStack.length > 0 ? (
                 <Flashcard
                     question={currentCardStack[currentIndex].question}
                     answer={currentCardStack[currentIndex].answer}
                 />
+            ) : (
+                <StatsCard skipped={skippedCardStack.length} mastered={masteredCardStack.length} />
             )}
             <div className="flex justify-center align-center">
                 <div className="flex align-center gap-3">
