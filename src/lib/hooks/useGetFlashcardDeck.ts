@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
 
-const useGetFlashcardLibrary = (): FlashcardLibrary => {
+const useGetFlashcardDeck = (): FlashcardDeck => {
     const { isPending, data } = useQuery({
-        queryKey: ['flashCardLibrary'],
+        queryKey: ['FlashcardDeck'],
         queryFn: async () => {
             const response = await fetch('/api/library')
             return await response.json()
@@ -12,4 +12,4 @@ const useGetFlashcardLibrary = (): FlashcardLibrary => {
     return { isPending, data }
 }
 
-export default useGetFlashcardLibrary
+export default useGetFlashcardDeck

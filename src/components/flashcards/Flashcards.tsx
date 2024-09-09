@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 import Button from '@/components/input-elements/Button'
-import useGetFlashcardLibrary from '@/lib/hooks/useGetFlashcardLibrary'
+import useGetFlashcardDeck from '@/lib/hooks/useGetFlashcardDeck'
 import FlashcardSkeleton from '@/components/skeletons/FlashcardSkeleton'
 import Flashcard from '@/components/flashcards/flashcard/Flashcard'
 
 const Flashcards: React.FC = () => {
-    const { data, isPending } = useGetFlashcardLibrary()
+    const { data, isPending } = useGetFlashcardDeck()
     const [currentCardStack, setCurrentCardStack] = React.useState<Flashcard[]>([])
     const [masteredCardStack, setMasteredCardStack] = React.useState<Flashcard[]>([])
     const [skippedCardStack, setSkippedCardStack] = React.useState<Flashcard[]>([])
@@ -48,7 +48,7 @@ const Flashcards: React.FC = () => {
         <div className="w-full flex flex-col gap-6">
             <div className="flex w-full">
                 <div className="flex flex-col gap-2 text-center">
-                    <p className="text-sm text-zinc-600">Learning</p>
+                    <p className="text-sm text-zinc-600">Current stack</p>
                     {currentCardStack.length}
                 </div>
                 <div className="flex justify-center gap-6 ml-auto">
@@ -71,10 +71,7 @@ const Flashcards: React.FC = () => {
             )}
             <div className="flex justify-center align-center">
                 <div className="flex align-center gap-3">
-                    <Button
-                        variant="outline"
-                        onClick={() => moveCardToStack(currentIndex, 'skipped')}
-                    >
+                    <Button variant="outline" onClick={() => moveCardToStack(currentIndex, 'skipped')}>
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"

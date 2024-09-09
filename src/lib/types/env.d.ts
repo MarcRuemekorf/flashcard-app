@@ -3,7 +3,7 @@ interface Flashcard {
     answer: string
 }
 
-interface FlashcardLibrary {
+interface FlashcardDeck {
     isPending: boolean
     data: Flashcard[]
 }
