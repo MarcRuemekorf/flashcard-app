@@ -2,17 +2,32 @@
 
 import React from 'react'
 import { NextPage } from 'next'
-import Flashcards from '@/components/flashcards/Flashcards'
+import useGetFlashcardDeck from '@/lib/hooks/useGetFlashcardDeck'
+import FlashcardStack from '@/components/flashcard-stack/FlashcardStack'
+import FlashcardStackSkeleton from '@/components/skeletons/flashcard-stack-skeleton/FlashcardStackSkeleton'
+import LearnPageTemplate from '@/components/templates/learn-page-template/LearnPageTemplate'
 
 const LearnPage: NextPage = () => {
+    const { data, isPending } = useGetFlashcardDeck()
+
+    if (isPending)
+        return (
+            <LearnPageTemplate>
+                <FlashcardStackSkeleton />
+            </LearnPageTemplate>
+        )
+
+    if (!data || data.length === 0)
+        return (
+            <LearnPageTemplate>
+                <p className="text-center">No data...</p>
+            </LearnPageTemplate>
+        )
+
     return (
-        <div className="w-full flex flex-col h-screen content-center justify-center">
-            <div className="w-full p-4">
-                <div className="w-full sm:w-1/2 lg:w-1/3 m-auto">
-                    <Flashcards />
-                </div>
-            </div>
-        </div>
+        <LearnPageTemplate>
+            <FlashcardStack />
+        </LearnPageTemplate>
     )
 }
 
