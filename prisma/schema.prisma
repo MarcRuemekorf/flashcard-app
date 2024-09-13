@@ -13,10 +13,18 @@ model Flashcard {
     question    String
     answer      String
     hint        String?
+    deck        Deck  @relation(fields: [deckId], references: [id])
+    deckId      Int
     created     DateTime  @default(now()) @map(name: "created_at")
     updatedAt   DateTime  @updatedAt @map(name: "updated_at")
     author      User?   @relation(fields: [authorId], references: [id])
     authorId    String?
+}
+
+model Deck {
+  id            Int    @id @default(autoincrement())
+  name          String
+  flashcards    Flashcard[]
 }
 
 model User {
