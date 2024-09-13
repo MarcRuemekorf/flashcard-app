@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import prisma from '@/lib/prisma'
 
 const data = [
     {
@@ -23,6 +24,18 @@ const data = [
     }
 ]
 
-export async function GET(request: Request) {
-    return NextResponse.json(data)
+export async function GET() {
+    const flashcards = await prisma.flashcard.findMany()
+    return NextResponse.json(flashcards)
+}
+
+export async function POST(request: Request) {
+    const { question, answer } = await request.json()
+    const newFlashcard = await prisma.flashcard.create({
+        data: {
+            question,
+            answer
+        }
+    })
+    return NextResponse.json(newFlashcard)
 }

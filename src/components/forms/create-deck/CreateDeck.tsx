@@ -1,15 +1,9 @@
 import React from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
-import Input from '../input-elements/Input'
-import Textarea from '../input-elements/Textarea'
+import Input from '@/components/input-elements/Input'
+import Textarea from '@/components/input-elements/Textarea'
 
-type FormData = {
-    title: string
-    description: string
-    content: string
-}
-
-const AddFlashcard: React.FC = () => {
+const CreateDeck = (): JSX.Element => {
     const methods = useForm<FormData>()
 
     const onSubmit = (data: FormData) => {
@@ -21,7 +15,7 @@ const AddFlashcard: React.FC = () => {
             <form onSubmit={methods.handleSubmit(onSubmit)}>
                 <Input name="question" label="Question:" />
                 <Input name="answer" label="Answer:" />
-                <Textarea name="example" label="Example usage:" placeholder="Enter an example..." />
+                <Textarea name="hint" label="Hint:" placeholder="Enter a hint..." />
 
                 <button type="submit">Submit</button>
             </form>
@@ -29,4 +23,4 @@ const AddFlashcard: React.FC = () => {
     )
 }
 
-export default AddFlashcard
+export default CreateDeck
