@@ -8,7 +8,6 @@ interface StatsCardProps {
 }
 
 const StatsCard: React.FC<StatsCardProps> = ({ skipped, mastered }) => {
-
     const title = skipped > mastered ? 'Good effort!' : 'Stack complete'
 
     return (
