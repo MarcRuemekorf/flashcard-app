@@ -2,7 +2,7 @@ import React from 'react'
 
 interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'variant'> {
     children: React.ReactNode
-    onClick: () => void
+    onClick?: () => void
     variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'outline'
     size?: 'sm' | 'md' | 'lg'
 }
