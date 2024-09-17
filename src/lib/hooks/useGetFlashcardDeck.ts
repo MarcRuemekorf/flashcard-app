@@ -1,8 +1,14 @@
+import { Flashcard } from '@prisma/client'
 import { useQuery } from '@tanstack/react-query'
 
-const useGetFlashcardDeck = (): FlashcardDeck => {
+interface Flashcards {
+    isPending: boolean
+    data: Flashcard[]
+}
+
+const useGetFlashcards = (): Flashcards => {
     const { isPending, data } = useQuery({
-        queryKey: ['FlashcardDeck'],
+        queryKey: ['Flashcards'],
         queryFn: async () => {
             const response = await fetch('/api/library')
             return await response.json()
@@ -12,4 +18,4 @@ const useGetFlashcardDeck = (): FlashcardDeck => {
     return { isPending, data }
 }
 
-export default useGetFlashcardDeck
+export default useGetFlashcards
