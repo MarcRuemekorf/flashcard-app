@@ -2,7 +2,7 @@ import React from 'react'
 
 interface ButtonProps extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'variant'> {
     children: React.ReactNode
-    onClick: () => void
+    onClick?: () => void
     variant?: 'primary' | 'secondary' | 'success' | 'danger' | 'warning' | 'outline'
     size?: 'sm' | 'md' | 'lg'
 }
@@ -25,7 +25,7 @@ const Button: React.FC<ButtonProps> = ({ children, onClick, variant = 'default',
     return (
         <button
             {...props}
-            className={`font-semibold rounded-full ${buttonVariant[variant]} ${buttonSize[size]} ${props.className}`}
+            className={`font-semibold rounded-md ${buttonVariant[variant]} ${buttonSize[size]} ${props.className}`}
             onClick={onClick}
         >
             {children}

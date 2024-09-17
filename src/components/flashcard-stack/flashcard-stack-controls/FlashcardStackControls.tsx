@@ -10,7 +10,7 @@ const FlashcardStackControls = ({ onSkip, onMaster }: FlashcardStackControlProps
     return (
         <div className="flex justify-center align-center">
             <div className="flex align-center gap-3">
-                <Button variant="outline" onClick={onSkip}>
+                <Button variant="outline" size="lg" className="rounded-full" onClick={onSkip}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -26,7 +26,7 @@ const FlashcardStackControls = ({ onSkip, onMaster }: FlashcardStackControlProps
                         />
                     </svg>
                 </Button>
-                <Button variant="success" onClick={onMaster}>
+                <Button variant="success" size="lg" className="rounded-full" onClick={onMaster}>
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"

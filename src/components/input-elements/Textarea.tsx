@@ -10,7 +10,7 @@ const Textarea: React.FC<TextareaProps> = ({ name, label, ...props }) => {
     const { register } = useFormContext()
 
     return (
-        <div>
+        <div className="flex flex-col gap-1">
             {label && <label htmlFor={name}>{label}</label>}
             <textarea {...props} id={name} {...register(name)} />
         </div>
