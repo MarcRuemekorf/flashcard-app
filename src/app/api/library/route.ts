@@ -30,9 +30,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-    const { question, answer } = await request.json()
+    const { deck, question, answer } = await request.json()
     const newFlashcard = await prisma.flashcard.create({
         data: {
+            deck,
             question,
             answer
         }
