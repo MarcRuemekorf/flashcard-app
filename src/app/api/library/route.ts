@@ -28,20 +28,3 @@ export async function GET() {
     const flashcards = await prisma.flashcard.findMany()
     return NextResponse.json(flashcards)
 }
-
-export async function POST(request: Request) {
-    const { id, question, answer, hint, deckId, created, updatedAt, authorId } = await request.json()
-    const newFlashcard = await prisma.flashcard.create({
-        data: {
-            id,
-            question,
-            answer,
-            hint,
-            deckId,
-            created,
-            updatedAt,
-            authorId
-        }
-    })
-    return NextResponse.json(newFlashcard)
-}
