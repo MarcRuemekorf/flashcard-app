@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+export const fetchCache = 'force-no-store'
+
 const data = [
     {
         question: 'What is the capital of France?',
@@ -27,15 +30,4 @@ const data = [
 export async function GET() {
     const flashcards = await prisma.flashcard.findMany()
     return NextResponse.json(flashcards)
-}
-
-export async function POST(request: Request) {
-    const { question, answer } = await request.json()
-    const newFlashcard = await prisma.flashcard.create({
-        data: {
-            question,
-            answer
-        }
-    })
-    return NextResponse.json(newFlashcard)
 }

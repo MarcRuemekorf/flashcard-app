@@ -4,10 +4,11 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "next build",
+        "build": "prisma generate && next build",
         "start": "next start",
         "lint": "next lint",
-        "code-fix": "npx prettier . --write"
+        "code-fix": "npx prettier . --write",
+        "postinstall": "prisma generate"
     },
     "dependencies": {
         "@prisma/client": "^5.19.1",
