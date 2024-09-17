@@ -11,7 +11,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ skipped, mastered }) => {
     const title = skipped > mastered ? 'Good effort!' : 'Stack complete'
 
     return (
-        <Card className="flex flex-col gap-6 h-full min-h-64 dark:bg-zinc-900 border border-zinc-800 text-white">
+        <Card className="flex flex-col gap-6 h-full min-h-64">
             <div className="flex flex-col gap-2 text-center">
                 <h2 className="text-3xl">{title}</h2>
                 <p>Well done! You have completed the stack.</p>

@@ -10,7 +10,7 @@ const Input: React.FC<InputProps> = ({ name, label, ...props }) => {
     const { register } = useFormContext()
 
     return (
-        <div>
+        <div className="flex flex-col gap-1">
             {label && <label htmlFor={name}>{label}</label>}
             <input {...props} id={name} {...register(name)} />
         </div>
