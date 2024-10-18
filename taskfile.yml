@@ -1,0 +1,18 @@
+version: '3'
+
+tasks:
+    init:
+        cmds:
+            - npm install
+
+    dev:
+        cmds:
+            - npm run dev
+
+    build:
+        cmds:
+            - npm run build
+
+    code-fix:
+        cmds:
+            - npx prettier . --write
