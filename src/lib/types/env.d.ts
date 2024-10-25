@@ -1,6 +1,7 @@
 interface Flashcard {
     question: string
     answer: string
+    hint?: string
 }
 
 interface FlashcardDeck {
