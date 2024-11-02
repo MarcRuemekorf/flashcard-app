@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { NextPage } from 'next'
-import useGetFlashcardDeck from '@/lib/hooks/useGetFlashcardDeck'
+import useGetFlashcardDeck from '@/lib/hooks/useGetFlashcards'
 import FlashcardStack from '@/components/flashcard-stack/FlashcardStack'
 import FlashcardStackSkeleton from '@/components/skeletons/flashcard-stack-skeleton/FlashcardStackSkeleton'
 import LearnPageTemplate from '@/components/templates/learn-page-template/LearnPageTemplate'

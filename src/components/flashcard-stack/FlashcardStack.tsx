@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import useGetFlashcardDeck from '@/lib/hooks/useGetFlashcardDeck'
+import useGetFlashcardDeck from '@/lib/hooks/useGetFlashcards'
 import FlashcardSkeleton from '@/components/skeletons/flashcard-stack-skeleton/flashcard-skeleton/FlashcardSkeleton'
 import Flashcard from '@/components/flashcard-stack/flashcard/Flashcard'
 import StatsCard from '@/components/session-stats/stats-card/StatsCard'
