@@ -19,6 +19,7 @@ model Flashcard {
     updatedAt   DateTime  @updatedAt @map(name: "updated_at")
     author      User?   @relation(fields: [authorId], references: [id])
     authorId    String?
+    @@map(name: "flashcards")
 }
 
 model Deck {
