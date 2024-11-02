@@ -12,7 +12,7 @@ const Input: React.FC<InputProps> = ({ name, label, ...props }) => {
     return (
         <div className="flex flex-col gap-1">
             {label && <label htmlFor={name}>{label}</label>}
-            <input {...props} id={name} {...register(name)} />
+            <input {...props} id={name} {...register(name)} className="bg-zinc-700 rounded py-1 px-2" />
         </div>
     )
 }
