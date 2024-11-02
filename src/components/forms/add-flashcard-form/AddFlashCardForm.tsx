@@ -4,14 +4,22 @@ import Input from '@/components/input-elements/Input'
 import Textarea from '@/components/input-elements/Textarea'
 import Card from '@/components/card/Card'
 import Button from '@/components/input-elements/Button'
+import { z, ZodType } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import usePostFlashcards from '@/lib/hooks/usePostFlashcards'
 
-type FormData = {
-    deckName: string
-    flashcards: Flashcard[]
-}
+const flashcardSchema = z.object({
+    deck: z.string().min(1, 'Deck name is required'),
+    question: z.string().min(1, 'Question is required'),
+    answer: z.string().min(1, 'Answer is required'),
+    hint: z.string().optional()
+})
 
 const AddFlashcardForm = (): JSX.Element => {
-    const methods = useForm<FormData>({ defaultValues: { flashcards: [{ question: '', answer: '', hint: '' }] } })
+    const methods = useForm<FlashcardFormData>({
+        resolver: zodResolver(flashcardSchema),
+        defaultValues: { flashcards: [{ question: '', answer: '', hint: '' }] }
+    })
 
     const { control } = methods
 
@@ -20,8 +28,10 @@ const AddFlashcardForm = (): JSX.Element => {
         name: 'flashcards'
     })
 
-    const onSubmit = (data: FormData) => {
-        console.log(data)
+    const { postFlashcards, isPending } = usePostFlashcards()
+
+    const onSubmit = (data: FlashcardFormData) => {
+        postFlashcards(data)
     }
 
     return (
@@ -30,7 +40,7 @@ const AddFlashcardForm = (): JSX.Element => {
                 <div className="flex flex-col gap-3">
                     <Card className="flex flex-col gap-3">
                         <h3 className="text-2xl">Select or create a deck</h3>
-                        <Input name="deck-name" label="Deck name:" />
+                        <Input name="deck" label="Deck name:" />
                     </Card>
                     {fields.map((field) => (
                         <Card className="flex flex-col gap-3" key={field.id}>
