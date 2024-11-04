@@ -19,8 +19,13 @@ const usePostFlashcards = () => {
         },
         onSuccess: (data) => {
             console.log(data)
-            const message = 'success'
-            alert(message)
+            const flashcards = data.flashcards
+
+            if (flashcards.length > 1) {
+                alert('Flashcards created successfully')
+            } else {
+                alert('Flashcard created successfully')
+            }
         },
         onError: (error) => {
             alert(`there was an error ${error}`)
