@@ -8,6 +8,24 @@ datasource db {
     directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
+
+model User {
+    id          String    @default(cuid()) @id
+    name        String?
+    email       String?   @unique
+    createdAt   DateTime  @default(now()) @map(name: "created_at")
+    updatedAt   DateTime  @updatedAt @map(name: "updated_at")
+    flashcards  Flashcard[]
+    @@map(name: "users")
+}
+
+model Deck {
+  id            Int    @id @default(autoincrement())
+  name          String
+  flashcards    Flashcard[]
+  @@map(name: "decks")
+}
+
 model Flashcard {
     id          String    @default(cuid()) @id
     question    String
@@ -19,20 +37,5 @@ model Flashcard {
     updatedAt   DateTime  @updatedAt @map(name: "updated_at")
     author      User?   @relation(fields: [authorId], references: [id])
     authorId    String?
-}
-
-model Deck {
-  id            Int    @id @default(autoincrement())
-  name          String
-  flashcards    Flashcard[]
-}
-
-model User {
-    id          String    @default(cuid()) @id
-    name        String?
-    email       String?   @unique
-    createdAt   DateTime  @default(now()) @map(name: "created_at")
-    updatedAt   DateTime  @updatedAt @map(name: "updated_at")
-    flashcards  Flashcard[]
-    @@map(name: "users")
+    @@map(name: "flashcards")
 }
