@@ -1,29 +1,75 @@
-generator client {
-    provider = "prisma-client-js"
-}
-
 datasource db {
     provider = "postgresql"
     url = env("POSTGRES_PRISMA_URL") // uses connection pooling
     directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
 
+generator client {
+    provider = "prisma-client-js"
+    engineType = "library"
+}
 
 model User {
-    id          String    @default(cuid()) @id
-    name        String?
-    email       String?   @unique
+    id              String    @default(cuid()) @id
+    firstName       String?
+    lastName        String?
+    email           String?   @unique
+    accounts        Account[]
+    sessions        Session[]
+    flashcards      Flashcard[]
+    @@map(name: "users")
+
     createdAt   DateTime  @default(now()) @map(name: "created_at")
     updatedAt   DateTime  @updatedAt @map(name: "updated_at")
-    flashcards  Flashcard[]
-    @@map(name: "users")
+}
+
+model Account {
+    userId            String
+    type              String
+    provider          String
+    providerAccountId String
+    refresh_token     String?
+    access_token      String?
+    expires_at        Int?
+    token_type        String?
+    scope             String?
+    id_token          String?
+    session_state     String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@id([provider, providerAccountId])
+}
+
+model Session {
+    session_token String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+    identifier String
+    token      String
+    expires    DateTime
+
+    @@id([identifier, token])
 }
 
 model Deck {
-  id            Int    @id @default(autoincrement())
-  name          String
-  flashcards    Flashcard[]
-  @@map(name: "decks")
+    id            Int    @id @default(autoincrement())
+    name          String
+    flashcards    Flashcard[]
+    @@map(name: "decks")
+
+    created     DateTime  @default(now()) @map(name: "created_at")
+    updatedAt   DateTime  @updatedAt @map(name: "updated_at")
 }
 
 model Flashcard {
@@ -31,11 +77,13 @@ model Flashcard {
     question    String
     answer      String
     hint        String?
-    deck        Deck  @relation(fields: [deckId], references: [id])
     deckId      Int
+    author      User?   @relation(fields: [authorId], references: [id])
+    @@map(name: "flashcards")
+
+    deck        Deck  @relation(fields: [deckId], references: [id])
+    authorId    String?
+
     created     DateTime  @default(now()) @map(name: "created_at")
     updatedAt   DateTime  @updatedAt @map(name: "updated_at")
-    author      User?   @relation(fields: [authorId], references: [id])
-    authorId    String?
-    @@map(name: "flashcards")
 }
