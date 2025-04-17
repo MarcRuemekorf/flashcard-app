@@ -26,6 +26,7 @@ const getUserByEmailAction = async (email: string) => {
 
 
 export const signInAction = async (formData: FormData) => {
+    console.log("FormData", formData);
     const rawFormData = {
         email: formData.email,
         password: formData.password,
@@ -48,6 +49,7 @@ export const signInAction = async (formData: FormData) => {
 
         throw error;
     }
+
     revalidatePath("/");
 };
 

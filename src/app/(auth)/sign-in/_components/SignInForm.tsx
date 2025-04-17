@@ -1,8 +1,9 @@
 "use client";
-import React, { useState } from "react";
+
+import React, { useActionState, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { signInAction } from "@/app/actions/auth";
 import TextInput from "@/components/text-input/TextInput";
+import { signIn } from "next-auth/react";
 
 type FormData = {
     email: string;
@@ -17,10 +18,18 @@ const SignInForm = () => {
     });
     const [submitting, setSubmitting] = useState<boolean>(false);
 
-    const onSignIn = async (data: FormData) => {
+    const onSignIn = async (formData: FormData) => {
+        console.log("Data: ", formData);
         setSubmitting(true);
-        await signInAction(data)
-        setSubmitting(false);
+
+        try {
+            await signIn("credentials", { ...formData, callbackUrl: "/" });
+            console.log("After sign in");
+        } catch (error) {
+            console.error("Error signing in: ", error);
+        } finally {
+            setSubmitting(false);
+        }
     };
 
 
@@ -46,7 +55,7 @@ const SignInForm = () => {
                     inputType="password"
                 />
                 <div className="form__footer">
-                    <button type="submit" title="Log in" disabled={submitting} />
+                    <button type="submit" title="Log in" disabled={submitting}>Sign in</button>
                 </div>
             </form>
         </FormProvider>
