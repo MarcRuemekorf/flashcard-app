@@ -1,11 +1,6 @@
-import { auth } from "../../auth"
-
 export default async function Home() {
-    const session = await auth()
-
     return (
         <main className="flex min-h-screen flex-col items-center justify-center p-24">
-            {session?.user?.name}
             <div className="flex flex-col gap-3 text-center">
                 <a
                     className="border border-zinc-800 hover:bg-zinc-800 text-white font-semibold py-6 px-8 rounded-full flex gap-2"

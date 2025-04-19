@@ -33,7 +33,6 @@ export const signInAction = async (formData: FormData) => {
     };
 
     const existingUser = await getUserByEmailAction(formData.email);
-    console.log(existingUser);
 
     try {
         await signIn("credentials", rawFormData);

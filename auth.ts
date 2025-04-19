@@ -31,7 +31,8 @@ const providers: Provider[] = [
             if (!passwordMatch) return null;
 
             return {
-                name: `${user.firstName} ${user.lastName}`,
+                firstName: user.firstName,
+                lastName: user.lastName,
                 email: user.email,
             };
         },
