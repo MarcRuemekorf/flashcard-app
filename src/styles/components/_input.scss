@@ -1,0 +1,17 @@
+input {
+    border: solid 2px #ccc;
+    border-radius: ".25rem";
+    width: 100%;
+
+    &:not(:placeholder-shown)valid {
+        outline-color: green;
+    }
+
+    &:not(:placeholder-shown)invalid {
+        outline-color: red;
+    }
+
+    :focus:invalid {
+        outline-color: orange;
+    }
+}
