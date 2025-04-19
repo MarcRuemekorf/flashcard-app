@@ -1,28 +1,24 @@
 export default async function Home() {
     return (
-        <main className="flex min-h-screen flex-col items-center justify-center p-24">
-            <div className="flex flex-col gap-3 text-center">
+        <main>
+            <div className="main-nav">
                 <a
-                    className="border border-zinc-800 hover:bg-zinc-800 text-white font-semibold py-6 px-8 rounded-full flex gap-2"
+                    className="main-nav__item link"
                     href="/add-flashcard"
                 >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="currentColor"
-                        className="size-6"
-                    >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
                     Add flashcard
                 </a>
                 <a
-                    className="bg-blue-700 hover:bg-blue-800 text-white font-semibold py-6 px-8 rounded-full"
+                    className="main-nav__item link"
                     href="/learn"
                 >
                     Start learning
+                </a>
+                <a
+                    className="main-nav__item link"
+                    href="/sign-in"
+                >
+                    Sign in
                 </a>
             </div>
         </main>
