@@ -1,10 +1,14 @@
 // Base
-@import "base/_reset.scss";
+@use 'base/_reset.scss' as *;
+
+// Abstracts
+@use 'abstracts/_variables.scss' as *;
+@use 'abstracts/_mixins.scss' as *;
 
 // Components
-@import "components/_input.scss";
-@import "components/_link.scss";
-@import "components/_button.scss";
+@use 'components/_input.scss' as *;
+@use 'components/_link.scss' as *;
+@use 'components/_button.scss' as *;
 
 // Layout
-@import "layout/_menu.scss";
+@use 'layout/_menu.scss' as *;

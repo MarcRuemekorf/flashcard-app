@@ -1,0 +1,124 @@
+@use '../styles/abstracts/mixins' as *;
+@use '../styles/abstracts/variables' as *;
+
+.main {
+    min-height: 100vh;
+    padding: var(--spacing-2xl) var(--spacing-lg);
+    background: linear-gradient(135deg, var(--primary-light) 0%, var(--bg-secondary) 100%);
+}
+
+.hero {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: var(--spacing-2xl) 0;
+}
+
+.title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-primary);
+
+    span {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    @include md {
+        font-size: 4.5rem;
+    }
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-2xl);
+    line-height: 1.8;
+
+    @include md {
+        font-size: 1.5rem;
+    }
+}
+
+.cta {
+    display: flex;
+    gap: var(--spacing-lg);
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.primaryButton,
+.secondaryButton {
+    @include button-base;
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    border-radius: var(--radius-lg);
+    font-weight: 600;
+    transition: all var(--transition-base);
+}
+
+.primaryButton {
+    background: var(--primary);
+    color: white;
+
+    &:hover {
+        background: var(--primary-hover);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+}
+
+.secondaryButton {
+    background: white;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+
+    &:hover {
+        background: var(--primary-light);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-md);
+    }
+}
+
+.features {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2xl);
+    max-width: 1200px;
+    margin: var(--spacing-2xl) auto 0;
+    padding: var(--spacing-2xl) 0;
+
+    @include md {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.feature {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+    transition:
+        transform var(--transition-base),
+        box-shadow var(--transition-base);
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        margin-bottom: var(--spacing-md);
+        color: var(--text-primary);
+    }
+
+    p {
+        color: var(--text-secondary);
+        line-height: 1.6;
+    }
+}
