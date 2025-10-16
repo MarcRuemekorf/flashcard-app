@@ -1,10 +1,11 @@
+// CSS Custom Properties for button components
 :root {
     // Base button properties
     --button-font-family: inherit;
     --button-font-weight: 600;
     --button-line-height: 1.5;
     --button-border-width: 1px;
-    --button-border-radius: 0.375rem;
+    --button-border-radius: 99rem;
     --button-cursor: pointer;
     --button-transition: all 0.15s ease-in-out;
 
@@ -13,11 +14,11 @@
     --button-focus-ring-offset: 2px;
 
     // Sizing (padding values)
-    --button-padding-sm-x: 0.75rem;
+    --button-padding-sm-x: 0.1rem;
     --button-padding-sm-y: 0.5rem;
-    --button-padding-md-x: 1rem;
+    --button-padding-md-x: 1.25rem;
     --button-padding-md-y: 0.75rem;
-    --button-padding-lg-x: 1.5rem;
+    --button-padding-lg-x: 1.75rem;
     --button-padding-lg-y: 1rem;
 
     // Font sizes
@@ -31,11 +32,11 @@
     --button-min-height-lg: 3rem;
 
     // Colors - Light theme
-    // Primary (Blue)
-    --button-primary-bg: #2563eb;
-    --button-primary-bg-hover: #1d4ed8;
-    --button-primary-bg-active: #1e40af;
-    --button-primary-bg-disabled: #93c5fd;
+    // Primary (Black)
+    --button-primary-bg: #000000;
+    --button-primary-bg-hover: #000000;
+    --button-primary-bg-active: #000000;
+    --button-primary-bg-disabled: #000000;
     --button-primary-text: #ffffff;
     --button-primary-text-disabled: #ffffff;
     --button-primary-border: transparent;

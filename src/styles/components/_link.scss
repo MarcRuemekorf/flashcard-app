@@ -327,6 +327,15 @@ button.link {
     }
 }
 
+// Remove underline in buttons styled as links
+.no-underline {
+    text-decoration: none !important;
+
+    &:hover {
+        text-decoration: none !important;
+    }
+}
+
 // High contrast mode support (accessibility)
 @media (prefers-contrast: high) {
     :root {
