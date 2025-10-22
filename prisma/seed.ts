@@ -1,18 +1,21 @@
-import { PrismaClient, Prisma } from '@prisma/client'
-import bcrypt from 'bcryptjs'
+import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function main() {
-    const hashedPassword = await bcrypt.hash('test1234', 10);
+async function main() {
+  console.log('🌱 Seeding database...')
 
-    const user: Prisma.UserCreateInput = {
-        firstName: 'Admin',
-        email: 'admin@flashcard.app',
-        password: hashedPassword,
-    }
+  // Note: Better Auth handles user creation with password hashing
+  // So we won't seed users here. Instead, we'll seed some example decks.
 
-    await prisma.user.create({ data: user })
+  console.log('✅ Seed completed!')
 }
 
 main()
+  .catch((e) => {
+    console.error('❌ Seed failed:', e)
+    process.exit(1)
+  })
+  .finally(async () => {
+    await prisma.$disconnect()
+  })
