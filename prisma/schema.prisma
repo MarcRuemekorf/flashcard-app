@@ -14,6 +14,7 @@ model User {
   emailVerified Boolean   @default(false)
   name          String?
   image         String?
+  password      String? @db.Text
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
@@ -22,20 +23,22 @@ model User {
   sessions      Session[]
   decks         Deck[]
   studySessions StudySession[]
-
+  
   @@map("user")
 }
 
 model Account {
-  id                String  @id @default(cuid())
-  accountId         String
-  providerId        String
-  userId            String
-  accessToken       String? @db.Text
-  refreshToken      String? @db.Text
-  idToken           String? @db.Text
-  expiresAt         DateTime?
-  password          String? @db.Text
+  id                    String  @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String? @db.Text
+  refreshToken          String? @db.Text
+  idToken               String? @db.Text
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -44,15 +47,29 @@ model Account {
 }
 
 model Session {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
+  token     String    @unique
   expiresAt DateTime
   ipAddress String?
   userAgent String?
   userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("session")
+}
+
+model Verification {
+  id         String     @id @default(cuid())
+  identifier String     @unique
+  value      String     @unique
+  expiresAt  DateTime
+  createdAt  DateTime?  @default(now())
+  updatedAt  DateTime?  @updatedAt
+
+  @@map("verification")
 }
 
 model Deck {

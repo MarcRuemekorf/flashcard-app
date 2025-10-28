@@ -7,7 +7,6 @@ import { signUp } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Link from 'next/link'
-import './AuthForm.scss'
 
 const RegisterForm = () => {
   const router = useRouter()
@@ -53,7 +52,7 @@ const RegisterForm = () => {
     <div className="auth-container">
       <div className="auth-card">
         <div className="auth-logo">
-          <h1>🎴 Flashcard</h1>
+          <h1>Flashcard App</h1>
           <p>Create your account to start learning</p>
         </div>
 
@@ -117,7 +116,7 @@ const RegisterForm = () => {
 
         <div className="auth-footer">
           Already have an account?{' '}
-          <Link href="/login">Sign in here</Link>
+          <Link href="/login">Login here</Link>
         </div>
       </div>
     </div>

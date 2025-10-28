@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import Providers from '@/components/providers'
-import '@/styles/globals.scss'
 
 export const metadata: Metadata = {
   title: 'Flashcard App',
