@@ -1,6 +1,5 @@
 import { getCurrentUser } from '@/lib/get-session'
 import { redirect } from 'next/navigation'
-import './dashboard.scss'
 
 export const metadata = {
   title: 'Dashboard - Flashcard App',
