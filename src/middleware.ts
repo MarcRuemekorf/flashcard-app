@@ -1,11 +1,8 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { auth } from './lib/auth'
+import { NextRequest, NextResponse } from 'next/server'
+import { getSessionCookie } from "better-auth/cookies";
 
 export async function middleware(request: NextRequest) {
-    const session = await auth.api.getSession({
-        headers: request.headers
-    })
+    const sessionCookie = getSessionCookie(request);
 
     const isAuthPage = request.nextUrl.pathname.startsWith('/login') || request.nextUrl.pathname.startsWith('/register')
     const isProtectedPage =
@@ -13,11 +10,13 @@ export async function middleware(request: NextRequest) {
         request.nextUrl.pathname.startsWith('/decks') ||
         request.nextUrl.pathname.startsWith('/study')
 
-    if (session && isAuthPage) {
+    // Redirect authenticated users away from auth pages
+    if (sessionCookie && isAuthPage) {
         return NextResponse.redirect(new URL('/dashboard', request.url))
     }
 
-    if (!session && isProtectedPage) {
+    // Redirect unauthenticated users to login for protected pages
+    if (!sessionCookie && isProtectedPage) {
         const loginUrl = new URL('/login', request.url)
         loginUrl.searchParams.set('redirect', request.nextUrl.pathname)
         return NextResponse.redirect(loginUrl)
