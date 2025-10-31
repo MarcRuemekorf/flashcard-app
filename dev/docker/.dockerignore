@@ -1,0 +1,10 @@
+# Ignore everything
+
+*
+
+## Except
+
+!.next/
+!package.json
+!node_modules/
+!public/
