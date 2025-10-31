@@ -1,17 +1,291 @@
-input {
-    border: solid 2px #ccc;
-    border-radius: ".25rem";
+:root {
+    // Sizing and spacing
+    --input-padding-x: 0.75rem;
+    --input-padding-y: 0.5rem;
+    --input-min-height: 2.5rem;
+    --input-border-width: 2px;
+    --input-border-radius: 0.25rem;
+
+    // Typography
+    --input-font-size: 1rem;
+    --input-line-height: 1.5;
+    --input-font-family: inherit;
+
+    // Colors - Light theme
+    --input-bg: #ffffff;
+    --input-bg-disabled: #f9fafb;
+    --input-bg-readonly: #f3f4f6;
+    --input-text-color: #1f2937;
+    --input-text-color-disabled: #9ca3af;
+    --input-placeholder-color: #6b7280;
+    --input-border-color: #d1d5db;
+    --input-border-color-hover: #9ca3af;
+    --input-border-color-focus: #3b82f6;
+    --input-border-color-valid: #10b981;
+    --input-border-color-invalid: #ef4444;
+    --input-border-color-warning: #f59e0b;
+
+    // Focus ring for accessibility
+    --input-focus-ring-width: 3px;
+    --input-focus-ring-color: rgba(59, 130, 246, 0.2);
+
+    // Transitions
+    --input-transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+    // Shadows
+    --input-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --input-shadow-focus: 0 0 0 var(--input-focus-ring-width) var(--input-focus-ring-color);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --input-bg: #1f2937;
+        --input-bg-disabled: #374151;
+        --input-bg-readonly: #374151;
+        --input-text-color: #f9fafb;
+        --input-text-color-disabled: #6b7280;
+        --input-placeholder-color: #9ca3af;
+        --input-border-color: #4b5563;
+        --input-border-color-hover: #6b7280;
+        --input-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+    }
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='url'],
+input[type='tel'],
+input[type='search'] {
+    display: block;
     width: 100%;
+    min-height: var(--input-min-height);
+    padding: var(--input-padding-y) var(--input-padding-x);
+    margin: 0;
+    box-sizing: border-box;
 
-    &:not(:placeholder-shown)valid {
-        outline-color: green;
+    // Remove default browser styling
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    // Typography
+    font-family: var(--input-font-family);
+    font-size: var(--input-font-size);
+    line-height: var(--input-line-height);
+    color: var(--input-text-color);
+
+    // Appearance
+    background-color: var(--input-bg);
+    background-image: none; // Remove default backgrounds
+    border: var(--input-border-width) solid var(--input-border-color);
+    border-radius: var(--input-border-radius);
+    box-shadow: var(--input-shadow);
+
+    // Smooth transitions for interactions
+    transition: var(--input-transition);
+
+    // Placeholder styling
+    &::placeholder {
+        color: var(--input-placeholder-color);
+        opacity: 1; // Firefox sets this to a lower value by default
     }
 
-    &:not(:placeholder-shown)invalid {
-        outline-color: red;
+    // Hover state (only when not disabled/readonly)
+    &:hover:not(:disabled):not([readonly]) {
+        border-color: var(--input-border-color-hover);
     }
 
-    :focus:invalid {
-        outline-color: orange;
+    // Focus state with proper accessibility
+    &:focus {
+        outline: none; // Remove default outline
+        border-color: var(--input-border-color-focus);
+        box-shadow: var(--input-shadow), var(--input-shadow-focus);
+        z-index: 1; // Ensure focus ring appears above other elements
+    }
+
+    // Disabled state
+    &:disabled {
+        background-color: var(--input-bg-disabled);
+        color: var(--input-text-color-disabled);
+        border-color: var(--input-border-color);
+        cursor: not-allowed;
+        opacity: 0.6;
+
+        &::placeholder {
+            color: var(--input-text-color-disabled);
+        }
+
+        // Remove hover effects when disabled
+        &:hover {
+            border-color: var(--input-border-color);
+        }
+    }
+
+    // Readonly state
+    &[readonly] {
+        background-color: var(--input-bg-readonly);
+        cursor: default;
+
+        &:focus {
+            border-color: var(--input-border-color-focus);
+            box-shadow: var(--input-shadow), var(--input-shadow-focus);
+        }
+    }
+
+    // Validation states - only show when user has interacted
+    // Valid state (only when not empty and passes validation)
+    &:not(:placeholder-shown):valid,
+    &.is-valid {
+        border-color: var(--input-border-color-valid);
+
+        &:focus {
+            box-shadow:
+                var(--input-shadow),
+                0 0 0 var(--input-focus-ring-width) rgba(16, 185, 129, 0.2);
+        }
+    }
+
+    // Invalid state (only when not empty and fails validation)
+    &:not(:placeholder-shown):invalid,
+    &.is-invalid {
+        border-color: var(--input-border-color-invalid);
+
+        &:focus {
+            box-shadow:
+                var(--input-shadow),
+                0 0 0 var(--input-focus-ring-width) rgba(239, 68, 68, 0.2);
+        }
+    }
+
+    // Warning state (custom class for intermediate validation states)
+    &.is-warning {
+        border-color: var(--input-border-color-warning);
+
+        &:focus {
+            box-shadow:
+                var(--input-shadow),
+                0 0 0 var(--input-focus-ring-width) rgba(245, 158, 11, 0.2);
+        }
+    }
+
+    // Focus + invalid state (when user is currently editing invalid field)
+    &:focus:invalid {
+        border-color: var(--input-border-color-warning);
+        box-shadow:
+            var(--input-shadow),
+            0 0 0 var(--input-focus-ring-width) rgba(245, 158, 11, 0.2);
+    }
+}
+
+// Textarea extends the same styling as text inputs
+textarea {
+    // Inherit all styles from text inputs
+    @extend input, [type='text'];
+
+    // Textarea-specific adjustments
+    min-height: calc(var(--input-min-height) * 2);
+    resize: vertical; // Allow vertical resize only
+    vertical-align: top; // Align to top for consistent layout
+
+    // Ensure consistent font family inheritance
+    font-family: var(--input-font-family);
+
+    // Prevent horizontal scrollbar
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+// Input container/group styling for better form layout
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-bottom: 1rem;
+
+    // Label styling
+    label {
+        font-size: calc(var(--input-font-size) * 0.875);
+        font-weight: 500;
+        color: var(--input-text-color);
+        margin-bottom: 0.25rem;
+
+        // Required field indicator
+        &.required::after,
+        &[aria-required='true']::after {
+            content: ' *';
+            color: var(--input-border-color-invalid);
+            margin-left: 0.125rem;
+        }
+    }
+
+    // Helper/error text
+    .help-text {
+        font-size: calc(var(--input-font-size) * 0.875);
+        color: var(--input-placeholder-color);
+        line-height: 1.4;
+        margin-top: 0.25rem;
+
+        &.error {
+            color: var(--input-border-color-invalid);
+        }
+
+        &.success {
+            color: var(--input-border-color-valid);
+        }
+
+        &.warning {
+            color: var(--input-border-color-warning);
+        }
+    }
+}
+
+// Responsive adjustments for mobile devices
+@media (max-width: 640px) {
+    :root {
+        --input-padding-x: 0.5rem;
+        --input-padding-y: 0.375rem;
+        --input-min-height: 2.25rem;
+        --input-font-size: 16px; // Prevents zoom on iOS
+    }
+}
+
+// High contrast mode support (accessibility)
+@media (prefers-contrast: high) {
+    :root {
+        --input-border-width: 3px;
+        --input-border-color: #000000;
+        --input-border-color-focus: #0066cc;
+        --input-text-color: #000000;
+        --input-bg: #ffffff;
+    }
+}
+
+// Reduced motion support (accessibility)
+@media (prefers-reduced-motion: reduce) {
+    input[type='text'],
+    input[type='email'],
+    input[type='password'],
+    input[type='url'],
+    input[type='tel'],
+    input[type='search'],
+    textarea {
+        transition: none;
+    }
+}
+
+// Print styles
+@media print {
+    input[type='text'],
+    input[type='email'],
+    input[type='password'],
+    input[type='url'],
+    input[type='tel'],
+    input[type='search'],
+    textarea {
+        border: 1px solid #000;
+        background: transparent;
+        box-shadow: none;
+        color: #000;
     }
 }

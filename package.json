@@ -13,26 +13,29 @@
         "seed": "tsx prisma/seed.ts"
     },
     "dependencies": {
+        "@hookform/resolvers": "^5.2.2",
         "@prisma/client": "^6.18.0",
         "@tanstack/react-query": "^5.90.5",
+        "@vercel/postgres": "^0.10.0",
         "bcryptjs": "^3.0.2",
+        "better-auth": "^1.3.27",
         "next": "15.5.6",
-        "next-auth": "^5.0.0-beta.25",
         "react": "^18",
         "react-dom": "^18",
-        "react-hook-form": "^7.53.1",
+        "react-hook-form": "^7.65.0",
         "tsx": "^4.19.3",
-        "zod": "^3.24.2"
+        "zod": "^3.25.76"
     },
     "devDependencies": {
+        "@tanstack/react-query-devtools": "^5.90.2",
         "@types/node": "^22",
         "@types/react": "^18",
         "@types/react-dom": "^18",
         "eslint": "^8",
         "eslint-config-next": "15.3.1",
         "prettier": "3.5.3",
-        "prisma": "^5.21.1",
-        "sass": "^1.86.3",
+        "prisma": "^6.18.0",
+        "sass": "^1.93.2",
         "typescript": "^5"
     }
 }
