@@ -19,25 +19,47 @@ function banner {
 # =========================================================
 
 function task:init { ## Initialise the project for local development
-	# Add checks to see if the project is ready for initialisation
-	# Add project preparation commands here
+	project:check-local-domains
+	project:initial-dependencies
+	task:build
+	task:start
 	project:update
-	# Finalize setting up the project
 	task:help
 }
 
 function task:start { ## Start the project in development mode
-	title "Run development application"
-	npm run dev
+	docker:start
+	proxy:connect
+	project:list-hosts
 }
 
 function task:update { ## Update all dependencies and files
 	project:update
 }
 
+function project:initial-dependencies
+{
+	title "Installing initial dependencies"
+	frontend-run npm install
+}
+
 function project:update {
-	title "Run project updates"
-	npm install
+	task:frontend:update
+	task:restart
+}
+
+function task:restart { ## Restart the local project
+	proxy:disconnect
+	docker:stop
+	project:delete-cache
+	docker:start
+	proxy:connect
+	project:list-hosts
+}
+
+function task:stop { ## Stop the local project
+	proxy:disconnect
+	docker:stop
 }
 
 function task:pr { ## Check out pull request <number> and update
@@ -57,6 +79,44 @@ function project:checkout-pr {
 	git checkout origin/pr/$1
 }
 
+function project:list-hosts {
+	title "Running local project"
+	echo -e "Frontend:   ${BLUE}http://flashcard-app.local${RESET}"
+}
+
+function project:check-required-files {
+	title "Checking required files"
+	file:ensure-copy .env dev/environments/local.env
+}
+
+function project:delete-cache {
+	title "Deleting all cache files"
+	folder:remove .next/
+	folder:remove tsconfig.tsbuildinfo
+	folder:remove next-env.d.ts
+}
+
+function project:check-local-domains {
+	title "Checking hosts file"
+	for localHostName in "flashcard-app.local";
+	do
+		if ! grep --silent "$localHostName" /etc/hosts; then
+			echo -e "Host ${YELLOW}$localHostName${RESET} not found in ${YELLOW}/etc/hosts${RESET}."
+			read -p "Do you want to add entries from dev/hostnames.txt to /etc/hosts? [y/N] " confirm
+			if [[ "$confirm" =~ ^[Yy]$ ]]; then
+				echo "Adding entries to /etc/hosts (you may be prompted for your password)..."
+				sudo bash -c 'cat dev/hostnames.txt >> /etc/hosts' \
+					&& echo "Hosts successfully added ✅" \
+					|| echo "❌ Failed to update /etc/hosts"
+			else
+				echo "Skipped adding hosts."
+			fi
+		else
+			echo -e "Host ${GREEN}$localHostName${RESET} already exists in ${YELLOW}/etc/hosts${RESET}."
+		fi
+	done
+}
+
 # =========================================================
 ## Custom section
 # =========================================================
@@ -67,18 +127,160 @@ function task:custom { ## This is a custom task definition
 }
 
 # =========================================================
+## Docker
+# =========================================================
+
+function task:build { ## Build all docker compose containers
+	title "Building docker compose project"
+	dockercompose build
+}
+
+function docker:start {
+	title "Starting docker compose project"
+	dockercompose up --detach --remove-orphans
+}
+
+function docker:stop {
+	title "Stopping docker compose project"
+	dockercompose down
+}
+
+function task:logs { ## Show the docker compose logs
+	title "Following local logs"
+	dockercompose logs --tail="20" --follow
+}
+
+function docker:assert-running {
+	echo "Asserting docker compose is running"
+	if [ -z "$(dockercompose ps -q)" ]; then
+		echo -e "${RED}Oh noes, docker was not running yet, starting...${RESET}"
+		task:start
+		title "Resuming task"
+	fi
+}
+
+function frontend-exec {
+	docker:assert-running
+	dockercompose exec frontend "$@"
+}
+
+function frontend-run {
+	dockercompose run frontend "$@"
+}
+
+function dockercompose {
+	USERID=$USERID GROUPID=$GROUPID docker compose --file ./dev/docker/compose.yml --ansi=always --project-name flashcard-app "$@"
+}
+
+# =========================================================
+## Frontend
+# =========================================================
+
+function task:frontend:update { ## Update all frontend dependencies
+	title "Updating frontend dependencies"
+	frontend-exec npm install
+}
+
+function task:frontend:shell { ## Open the frontend bash shell
+	title "Opening frontend bash shell"
+	frontend-exec /bin/sh
+}
+
+# =========================================================
+# Development proxy
+# https://github.com/Enrise/DevelopmentProxy
+# =========================================================
+
+function proxy:start {
+	title "Starting development proxy"
+    if ($(docker ps | grep -q development-proxy)); then
+		echo "Development hosts proxy is already running."
+		exit 0
+	fi
+
+	mkdir -p ~/.development-proxy/config || true
+	mkdir -p ~/.development-proxy/certs || true
+
+	echo "Starting development proxy..."
+	docker network create development-proxy > /dev/null 2>&1 || true
+	(docker run \
+		--detach \
+		--rm \
+		--publish 80:80 \
+		--publish 443:443 \
+		--publish 10081:10081 \
+		--volume /var/run/docker.sock:/var/run/docker.sock:ro \
+		--volume ~/.development-proxy/config:/var/config:ro \
+		--volume ~/.development-proxy/certs:/var/certs:ro \
+		--name development-proxy \
+		--network development-proxy \
+		traefik:v2.11 \
+		--api.insecure=true \
+		--providers.docker=true \
+		--providers.docker.exposedbydefault=false \
+		--providers.file.directory=/var/config \
+		--providers.file.watch=true \
+		--entrypoints.web.address=:80 \
+		--entrypoints.web-secure.address=:443 \
+		--entrypoints.traefik.address=:10081 > /dev/null && echo "Started.")
+}
+
+function proxy:connect {
+	title "Connecting development proxy nextwork"
+    docker network connect $NETWORK development-proxy || true
+    echo "Connected docker network."
+}
+
+function proxy:disconnect {
+	title "Disconnecting development proxy nextwork"
+    docker network disconnect $NETWORK development-proxy || true
+    echo "Disconnected docker network."
+}
+
+# =========================================================
+# Utilities
+# =========================================================
+
+function file:ensure { # Abort if the desired file is not found
+	if [ ! -f $1 ]; then
+		echo -e "Missing required file ${RED}$1${RESET}, make sure it is created."
+		exit 1
+	else
+		echo -e "File ${GREEN}$1${RESET} is present.";
+	fi
+}
+
+function file:ensure-copy { # file:ensure-copy $COPY_DESTINATION $SOURCE
+	if [ ! -f $1 ]; then
+		cp $2 $1;
+		echo -e "Created copy of ${YELLOW}$2${RESET} to create required file ${GREEN}$1${RESET}.";
+	else
+		echo -e "File ${GREEN}$1${RESET} is present.";
+	fi
+}
+
+function folder:remove { # Remove a folder if it exists
+	rm -rf $1
+	echo -e "${RED}Removed${RESET} folder ${YELLOW}$1${RESET}."
+}
+
+# =========================================================
 ## Taskfile
 # =========================================================
 
 set -eo pipefail
 
-BLUE=$(printf '\\033[36m')
-YELLOW=$(printf '\\033[33m')
-RED=$(printf '\\033[31m')
-GREEN=$(printf '\\033[32m')
-RESET=$(printf '\\033[0m')
+BLUE=$(printf '\033[36m')
+YELLOW=$(printf '\033[33m')
+RED=$(printf '\033[31m')
+GREEN=$(printf '\033[32m')
+RESET=$(printf '\033[0m')
 
-# Define global variables here
+USERID=$(id -u)
+GROUPID=$(id -g)
+NETWORK="flashcard-app-network"
+
+PATH=./node_modules/.bin:$PATH
 
 function title {
 	echo -e "\n${BLUE}=>${RESET} $1\n"
@@ -90,7 +292,7 @@ function task:help { ## Show all available tasks
 		{printf "\033[33m%-34s\033[0m %s\n", $1, $2}' $0 |\
 		sed -E "s/[#]{2,}[ ]*/${RESET}/g" |\
 		sed -E "s/function task:*/  /g"
-	echo -e "\n${BLUE}Usage:${RESET} $0 ${YELLOW}<task>${RESET} <args>"
+	echo -e "\n${BLUE}Usage:${RESET} ./Taskfile ${YELLOW}<task>${RESET} <args>"
 }
 
 function task:shorthand { ## Create CLI shorthand task instead of ./Taskfile

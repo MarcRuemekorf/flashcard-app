@@ -1,0 +1,27 @@
+services:
+  frontend:
+    build:
+      context: ../../
+      dockerfile: dev/docker/Dockerfile
+      args:
+        USERID: '${USERID}'
+        GROUPID: '${GROUPID}'
+      target: local
+    ports:
+      - "3000:3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.flashcard-app.rule=Host(`flashcard-app.local`)"
+      - "traefik.http.routers.flashcard-app.entrypoints=web"
+      - "traefik.http.services.flashcard-app.loadbalancer.server.port=3000"
+    volumes:
+      - ../../:/app
+    environment:
+      NODE_ENV: development
+      FORCE_COLOR: 1
+    user: ${USERID}:${GROUPID}
+
+networks:
+  default:
+    name: flashcard-app-network
+    driver: bridge
