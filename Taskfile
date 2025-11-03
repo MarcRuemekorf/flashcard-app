@@ -28,6 +28,7 @@ function task:init { ## Initialise the project for local development
 }
 
 function task:start { ## Start the project in development mode
+	proxy:start
 	docker:start
 	proxy:connect
 	project:list-hosts
@@ -52,6 +53,7 @@ function task:restart { ## Restart the local project
 	proxy:disconnect
 	docker:stop
 	project:delete-cache
+	proxy:start
 	docker:start
 	proxy:connect
 	project:list-hosts
@@ -193,36 +195,7 @@ function task:frontend:shell { ## Open the frontend bash shell
 
 function proxy:start {
 	title "Starting development proxy"
-    if ($(docker ps | grep -q development-proxy)); then
-		echo "Development hosts proxy is already running."
-		exit 0
-	fi
-
-	mkdir -p ~/.development-proxy/config || true
-	mkdir -p ~/.development-proxy/certs || true
-
-	echo "Starting development proxy..."
-	docker network create development-proxy > /dev/null 2>&1 || true
-	(docker run \
-		--detach \
-		--rm \
-		--publish 80:80 \
-		--publish 443:443 \
-		--publish 10081:10081 \
-		--volume /var/run/docker.sock:/var/run/docker.sock:ro \
-		--volume ~/.development-proxy/config:/var/config:ro \
-		--volume ~/.development-proxy/certs:/var/certs:ro \
-		--name development-proxy \
-		--network development-proxy \
-		traefik:v2.11 \
-		--api.insecure=true \
-		--providers.docker=true \
-		--providers.docker.exposedbydefault=false \
-		--providers.file.directory=/var/config \
-		--providers.file.watch=true \
-		--entrypoints.web.address=:80 \
-		--entrypoints.web-secure.address=:443 \
-		--entrypoints.traefik.address=:10081 > /dev/null && echo "Started.")
+    curl --silent --location https://enri.se/development-proxy-start | sh
 }
 
 function proxy:connect {
