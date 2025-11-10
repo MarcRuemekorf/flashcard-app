@@ -1,42 +1,27 @@
+import { buttonVariants } from '@/components/ui/button'
 import Link from 'next/link'
 
 const HomePage = () => {
   return (
-    <main className="home-main">
-      <div className="home-hero">
-        <h1 className="home-title">
-          <span>Flashcard App</span>
-        </h1>
-        <p className="home-subtitle">
-          Master any subject with spaced repetition flashcards
-        </p>
-        <div className="home-cta">
-          <Link href="/register" className="home-primary-button">
-            Register
-          </Link>
-          <Link href="/login" className="home-secondary-button">
-            Login
-          </Link>
+    <main className="container mx-auto flex min-h-screen flex-col items-center justify-center p-4">
+      <article className="flex gap-2">
+        <div className="h-full flex content-center justify-center">
+          <img src="/flashcards-illustration.png" alt="Flashcards Illustration" width={300} height={300} />
         </div>
-      </div>
-
-      <div className="home-features">
-        <div className="home-feature">
-          <div className="home-feature-icon">📚</div>
-          <h3>Organize Your Decks</h3>
-          <p>Create unlimited decks to organize your learning materials</p>
+        <div className="flex flex-col gap-2">
+          <h1>
+            Master any subject with spaced repetition flashcards
+          </h1>
+          <div className="flex gap-2">
+            <Link href="/register" className={buttonVariants({ size: "lg" })} >
+              Register
+            </Link>
+            <Link href="/login" className={buttonVariants({ size: "lg", variant: "outline" })} >
+              Login
+            </Link>
+          </div>
         </div>
-        <div className="home-feature">
-          <div className="home-feature-icon">🧠</div>
-          <h3>Spaced Repetition</h3>
-          <p>Study smarter with our intelligent spaced repetition algorithm</p>
-        </div>
-        <div className="home-feature">
-          <div className="home-feature-icon">📊</div>
-          <h3>Track Progress</h3>
-          <p>Monitor your learning journey with detailed statistics</p>
-        </div>
-      </div>
+      </article>
     </main>
   )
 }
