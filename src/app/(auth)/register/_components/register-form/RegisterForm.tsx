@@ -7,6 +7,7 @@ import { signUp } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Link from 'next/link'
+import { Button } from '@/components/ui/button'
 
 const RegisterForm = () => {
   const router = useRouter()
@@ -105,13 +106,8 @@ const RegisterForm = () => {
             )}
           </div>
 
-          <button
-            type="submit"
-            className="auth-submit-button"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Creating account...' : 'Create Account'}
-          </button>
+          <Button type="submit" disabled={isLoading}>{ isLoading ? 'Creating account...' : 'Create Account' }</Button>
+
         </form>
 
         <div className="auth-footer">
