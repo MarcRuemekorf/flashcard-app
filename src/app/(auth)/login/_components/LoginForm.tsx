@@ -6,7 +6,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { signInSchema, type SignInInput } from '@/lib/validations/auth'
 import { signIn } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Label } from '@/components/ui/label'
 
 const LoginForm = () => {
     const router = useRouter()
@@ -14,7 +17,7 @@ const LoginForm = () => {
     const [isLoading, setIsLoading] = useState(false)
 
     const form = useForm<SignInInput>({
-        resolver: zodResolver(signInSchema),
+        resolver: zodResolver(signInSchema)
     })
 
     const onLogin = async (formData: SignInInput) => {
@@ -24,7 +27,7 @@ const LoginForm = () => {
         try {
             const response = await signIn.email({
                 email: formData.email,
-                password: formData.password,
+                password: formData.password
             })
             if (response.error) {
                 setError(response.error.message || 'Failed to sign in')
@@ -41,24 +44,19 @@ const LoginForm = () => {
     }
 
     return (
-        <div className="auth-container">
-            <div className="auth-card">
-                <div className="auth-logo">
-                    <h1>Flashcard App</h1>
-                    <p>Sign in to your account</p>
-                </div>
-
-                {error && (
-                    <div className="form-alert error">
-                        {error}
-                    </div>
-                )}
+        <Card className="w-full max-w-sm">
+            <CardHeader>
+                <CardTitle>Login to your account</CardTitle>
+                <CardDescription>Enter your email below to login to your account</CardDescription>
+            </CardHeader>
+            <CardContent>
+                {error && <div className="form-alert error">{error}</div>}
 
                 <FormProvider {...form}>
                     <form onSubmit={form.handleSubmit(onLogin)} className="auth-form">
                         <div className="form-group">
-                            <label htmlFor="email">Email</label>
-                            <input
+                            <Label htmlFor="email">Email</Label>
+                            <Input
                                 id="email"
                                 type="email"
                                 placeholder="you@example.com"
@@ -71,8 +69,8 @@ const LoginForm = () => {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="password">Password</label>
-                            <input
+                            <Label htmlFor="password">Password</Label>
+                            <Input
                                 id="password"
                                 type="password"
                                 placeholder="Enter your password"
@@ -83,23 +81,18 @@ const LoginForm = () => {
                                 <span className="form-error">{form.formState.errors.password.message}</span>
                             )}
                         </div>
-
-                        <button
-                            type="submit"
-                            className="btn btn-primary"
-                            disabled={isLoading}
-                        >
-                            {isLoading ? 'Signing in...' : 'Sign In'}
-                        </button>
                     </form>
                 </FormProvider>
-
-                <div className="auth-footer">
-                    Don&apos;t have an account?{' '}
-                    <Link href="/register">Register here</Link>
-                </div>
-            </div>
-        </div>
+            </CardContent>
+            <CardFooter className="flex-col gap-2">
+                <Button type="submit" className="w-full" disabled={isLoading}>
+                    {isLoading ? 'Logging in...' : 'Login'}
+                </Button>
+                <Button variant="link" className="w-full">
+                    Register
+                </Button>
+            </CardFooter>
+        </Card>
     )
 }
 
