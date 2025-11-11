@@ -1,73 +1,70 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider = "postgresql"
-    url = env("POSTGRES_PRISMA_URL") // uses connection pooling
-    directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  emailVerified Boolean   @default(false)
-  name          String?
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean?  @default(false)
   image         String?
-  password      String? @db.Text
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  // Relations
-  accounts      Account[]
-  sessions      Session[]
+  updatedAt     DateTime  @default(now()) @updatedAt
   decks         Deck[]
-  studySessions StudySession[]
-  
+  sessions      Session[]
+  accounts      Account[]
+
+  @@unique([email])
   @@map("user")
 }
 
-model Account {
-  id                    String  @id @default(cuid())
-  accountId             String
-  providerId            String
-  userId                String
-  accessToken           String? @db.Text
-  refreshToken          String? @db.Text
-  idToken               String? @db.Text
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([providerId, accountId])
-  @@map("account")
-}
-
 model Session {
-  id        String    @id @default(cuid())
-  token     String    @unique
+  id        String   @id
   expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   ipAddress String?
   userAgent String?
   userId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([token])
   @@map("session")
 }
 
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("account")
+}
+
 model Verification {
-  id         String     @id @default(cuid())
-  identifier String     @unique
-  value      String     @unique
+  id         String   @id
+  identifier String
+  value      String
   expiresAt  DateTime
-  createdAt  DateTime?  @default(now())
-  updatedAt  DateTime?  @updatedAt
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 
   @@map("verification")
 }
@@ -76,61 +73,24 @@ model Deck {
   id          String   @id @default(cuid())
   title       String
   description String?
-  color       String?  @default("#6366f1") // Hex color for UI
+  color       String?  @default("#FFFFFF")
   createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
-  userId   String
-  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  cards    Card[]
-  sessions StudySession[]
-
-  @@index([userId])
-  @@map("decks")
+  updatedAt   DateTime @default(now()) @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  cards       Card[]
 }
 
 model Card {
   id        String   @id @default(cuid())
-  front     String   @db.Text // Question/Prompt
-  back      String   @db.Text // Answer
-  hint      String?  @db.Text // Optional hint
-  imageUrl  String?  // Optional image URL
+  prompt    String   @db.Text
+  response  String   @db.Text
+  hint      String?  @db.Text
+  imageUrl  String?
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @default(now()) @updatedAt
+  deckId    String
+  deck      Deck     @relation(fields: [deckId], references: [id])
 
-  // Spaced repetition fields
-  easeFactor    Float    @default(2.5) // SM-2 algorithm
-  interval      Int      @default(0) // Days until next review
-  repetitions   Int      @default(0) // Number of successful repetitions
-  nextReviewAt  DateTime @default(now())
-  lastReviewedAt DateTime?
-
-  // Relations
-  deckId String
-  deck   Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
-
-  @@index([deckId])
-  @@index([nextReviewAt])
-  @@map("cards")
-}
-
-model StudySession {
-  id               String   @id @default(cuid())
-  startedAt        DateTime @default(now())
-  completedAt      DateTime?
-  cardsStudied     Int      @default(0)
-  cardsCorrect     Int      @default(0)
-  cardsIncorrect   Int      @default(0)
-  durationSeconds  Int?     // Total time spent
-
-  // Relations
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  deckId String
-  deck   Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
-
-  @@index([userId])
-  @@index([deckId])
-  @@map("study_sessions")
+  @@map("card")
 }
