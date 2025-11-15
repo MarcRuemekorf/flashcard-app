@@ -1,3 +1,3 @@
-#==== Avics Next Care
+#==== Flashcard App
 127.0.0.1 flashcard-app.local
 #====
