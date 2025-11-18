@@ -61,7 +61,7 @@ const RegisterForm = () => {
             </CardHeader>
             <CardContent>
                 {error && (
-                    <Alert variant="destructive">
+                    <Alert variant="destructive" className="mb-4">
                         <AlertDescription>{error}</AlertDescription>
                     </Alert>
                 )}
@@ -108,10 +108,9 @@ const RegisterForm = () => {
                 <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? 'Creating account...' : 'Create Account'}
                 </Button>
-                Already have an account?{' '}
-                <Link className={buttonVariants({ variant: 'link' })} href="/login">
-                    Login here
-                </Link>
+                <Text>
+                    Already have an account? <Link href="/login">Login here</Link>
+                </Text>
             </CardFooter>
         </Card>
     )

@@ -7,9 +7,10 @@ import { signInSchema, type SignInInput } from '@/lib/validations/auth'
 import { signIn } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { Button, buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
+import Link from 'next/link'
 
 const LoginForm = () => {
     const router = useRouter()
@@ -88,9 +89,9 @@ const LoginForm = () => {
                 <Button type="submit" className="w-full" disabled={isLoading}>
                     {isLoading ? 'Logging in...' : 'Login'}
                 </Button>
-                <Button variant="link" className="w-full">
+                <Link className={buttonVariants({ variant: 'link' })} href="/register">
                     Register
-                </Button>
+                </Link>
             </CardFooter>
         </Card>
     )
