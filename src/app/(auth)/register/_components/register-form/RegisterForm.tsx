@@ -7,7 +7,7 @@ import { signUp } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import Link from 'next/link'
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -54,19 +54,19 @@ const RegisterForm = () => {
     }
 
     return (
-        <Card className="w-full max-w-sm">
-            <CardHeader>
-                <CardTitle>Login to your account</CardTitle>
-                <CardDescription>Enter your email below to login to your account</CardDescription>
-            </CardHeader>
-            <CardContent>
-                {error && (
-                    <Alert variant="destructive" className="mb-4">
-                        <AlertDescription>{error}</AlertDescription>
-                    </Alert>
-                )}
+        <form onSubmit={handleSubmit(onSubmit)}>
+            <Card className="w-full max-w-sm">
+                <CardHeader>
+                    <CardTitle>Create your account</CardTitle>
+                    <CardDescription>Enter your email below to create your account</CardDescription>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-2">
+                    {error && (
+                        <Alert variant="destructive" className="mb-4">
+                            <AlertDescription>{error}</AlertDescription>
+                        </Alert>
+                    )}
 
-                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
                     <div className="auth-form-group">
                         <Label htmlFor="name">Name</Label>
                         <Input
@@ -102,17 +102,17 @@ const RegisterForm = () => {
                         />
                         {errors.password && <span className="auth-error">{errors.password.message}</span>}
                     </div>
-                </form>
-            </CardContent>
-            <CardFooter className="flex-col gap-2">
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Creating account...' : 'Create Account'}
-                </Button>
-                <Text>
-                    Already have an account? <Link href="/login">Login here</Link>
-                </Text>
-            </CardFooter>
-        </Card>
+                </CardContent>
+                <CardFooter className="flex-col gap-2">
+                    <Button type="submit" className="w-full" disabled={isLoading}>
+                        {isLoading ? 'Creating account...' : 'Create Account'}
+                    </Button>
+                    <div>
+                        Already have an account? <Link href="/login">Login here</Link>
+                    </div>
+                </CardFooter>
+            </Card>
+        </form>
     )
 }
 
