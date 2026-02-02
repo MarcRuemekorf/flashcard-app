@@ -1,0 +1,133 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+    directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  accounts      Account[]
+  sessions      Session[]
+  decks         Deck[]
+  studySessions StudySession[]
+  
+  @@map("user")
+}
+
+model Account {
+  id                    String  @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String? @db.Text
+  refreshToken          String? @db.Text
+  idToken               String? @db.Text
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, accountId])
+  @@map("account")
+}
+
+model Session {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Verification {
+  id         String     @id @default(cuid())
+  identifier String     @unique
+  value      String     @unique
+  expiresAt  DateTime
+  createdAt  DateTime?  @default(now())
+  updatedAt  DateTime?  @updatedAt
+
+  @@map("verification")
+}
+
+model Deck {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  color       String?  @default("#6366f1") // Hex color for UI
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  userId   String
+  user     User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cards    Card[]
+  sessions StudySession[]
+
+  @@index([userId])
+  @@map("decks")
+}
+
+model Card {
+  id        String   @id @default(cuid())
+  front     String   @db.Text // Question/Prompt
+  back      String   @db.Text // Answer
+  hint      String?  @db.Text // Optional hint
+  imageUrl  String?  // Optional image URL
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Spaced repetition fields
+  easeFactor    Float    @default(2.5) // SM-2 algorithm
+  interval      Int      @default(0) // Days until next review
+  repetitions   Int      @default(0) // Number of successful repetitions
+  nextReviewAt  DateTime @default(now())
+  lastReviewedAt DateTime?
+
+  // Relations
+  deckId String
+  deck   Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
+
+  @@index([deckId])
+  @@index([nextReviewAt])
+  @@map("cards")
+}
+
+model StudySession {
+  id               String   @id @default(cuid())
+  startedAt        DateTime @default(now())
+  completedAt      DateTime?
+  cardsStudied     Int      @default(0)
+  cardsCorrect     Int      @default(0)
+  cardsIncorrect   Int      @default(0)
+  durationSeconds  Int?     // Total time spent
+
+  // Relations
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  deckId String
+  deck   Deck   @relation(fields: [deckId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([deckId])
+  @@map("study_sessions")
+}
